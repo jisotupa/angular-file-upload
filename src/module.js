@@ -526,7 +526,7 @@ module
                     encoding: 'multipart/form-data' // old IE
                 });
 
-                iframe.bind('load', function() {
+                iframe[0].onload = function() {
                     try {
                         // Fix for legacy IE browsers that loads internal error page
                         // when failed WS response received. In consequence iframe
@@ -549,14 +549,16 @@ module
 
                     that._onSuccessItem(item, response, xhr.status, headers);
                     that._onCompleteItem(item, response, xhr.status, headers);
-                });
+                };
 
                 form.abort = function() {
                     var xhr = {status: 0, dummy: true};
                     var headers = {};
                     var response;
 
-                    iframe.unbind('load').prop('src', 'javascript:false;');
+                    iframe[0].onload = undefined;
+                    iframe[0].src = 'javascript:false;';
+
                     form.replaceWith(input);
 
                     that._onCancelItem(item, response, xhr.status, headers);
